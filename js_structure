@@ -1,0 +1,54 @@
+JS app structure
+
+//defining global namespace
+var NETFILCS = {};
+
+/*
+*Main Script
+*/
+(function(i$, app){
+
+//initializing...
+app.init = function(){
+  
+	//attaching listener
+	i$('selector').bindEventListener('click', app.populateMovies);
+};
+
+app.populateMovies = function(evt){
+
+};
+
+
+//attaching onload handler
+i$(window).bindEventListener('load', app.init);
+
+}(iUtils, NETFILCS));
+
+
+
+
+//defining global namespace
+var myApp = {};
+
+/*
+*Main Script
+*/
+(function($, app){
+
+//initializing...
+app.init = function(){
+  
+	//attaching listener
+	$('selector').on('click', app.populateMovies);
+};
+
+app.populateMovies = function(evt){
+
+};
+
+
+//attaching onload handler
+$(document).ready(app.init);
+
+}(jQuery, myApp));
