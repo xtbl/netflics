@@ -29,11 +29,15 @@ window.onload = function () {
 			  }
 			});
 		},
-		getGenreById: function(genre){
-		//var genres = { property1: value1,...};
-		"genres":[
-			{"id":28,"name":"Action"},{"id":12,"name":"Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":105,"name":"Disaster"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":82,"name":"Eastern"},{"id":2916,"name":"Erotic"},{"id":10751,"name":"Family"},{"id":10750,"name":"FanFilm"},{"id":14,"name":"Fantasy"},{"id":10753,"name":"FilmNoir"},{"id":10769,"name":"Foreign"},{"id":36,"name":"History"},{"id":10595,"name":"Holiday"},{"id":27,"name":"Horror"},{"id":10756,"name":"Indie"},{"id":10402,"name":"Music"},{"id":22,"name":"Musical"},{"id":9648,"name":"Mystery"},{"id":10754,"name":"Neo-noir"},{"id":1115,"name":"RoadMovie"},{"id":10749,"name":"Romance"},{"id":878,"name":"ScienceFiction"},{"id":10755,"name":"Short"},{"id":9805,"name":"Sport"},{"id":10758,"name":"SportingEvent"},{"id":10757,"name":"SportsFilm"},{"id":10748,"name":"Suspense"},{"id":10770,"name":"TVmovie"},{"id":53,"name":"Thriller"},{"id":10752,"name":"War"},{"id":37,"name":"Western"}
-		]
+		getGenreById: function(genderName){
+			var genderId = 0;
+			var genresList = [ {"id":28,"name":"Action"},{"id":12,"name":"Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":105,"name":"Disaster"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":82,"name":"Eastern"},{"id":2916,"name":"Erotic"},{"id":10751,"name":"Family"},{"id":10750,"name":"FanFilm"},{"id":14,"name":"Fantasy"},{"id":10753,"name":"FilmNoir"},{"id":10769,"name":"Foreign"},{"id":36,"name":"History"},{"id":10595,"name":"Holiday"},{"id":27,"name":"Horror"},{"id":10756,"name":"Indie"},{"id":10402,"name":"Music"},{"id":22,"name":"Musical"},{"id":9648,"name":"Mystery"},{"id":10754,"name":"Neo-noir"},{"id":1115,"name":"RoadMovie"},{"id":10749,"name":"Romance"},{"id":878,"name":"ScienceFiction"},{"id":10755,"name":"Short"},{"id":9805,"name":"Sport"},{"id":10758,"name":"SportingEvent"},{"id":10757,"name":"SportsFilm"},{"id":10748,"name":"Suspense"},{"id":10770,"name":"TVmovie"},{"id":53,"name":"Thriller"},{"id":10752,"name":"War"},{"id":37,"name":"Western"} ];
+		    for (var i = genresList.length - 1; i >= 0; i--) {
+		    	if( genresList[i].name == genderName ){
+		    		genderId = genresList[i].id;
+		    	}
+		    };
+		    return genderId;
 		}
 	};
 
@@ -69,6 +73,7 @@ window.onload = function () {
 		$('#romance').elastislide();
 		NetFlics.getData.utils.getMoviesByGenre(NetFlics.dom.utils.addMoviePosters,'adventure',12);
 		$('#adventure').elastislide();
+		console.log('getGenreById works: '+NetFlics.getData.utils.getGenreById('Action') );
 	});
 
 
