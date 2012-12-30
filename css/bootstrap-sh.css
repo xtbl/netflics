@@ -5824,3 +5824,7 @@ label {
 .affix {
   position: fixed;
 }
+
+#movie-container h2:first-letter{
+  text-transform: uppercase;
+}

@@ -1,14 +1,9 @@
 
-window.onload = function () {
-		
-	//slider
-	/*$('.bxslider').bxSlider({
-		minSlides: 3,
-  		maxSlides: 4,
-  		slideWidth: 170,
-  		slideMargin: 10
-  	});
-	*/
+$(function(){
+
+
+
+
 
 	//top level package
 	var NetFlics = NetFlics || {};
@@ -19,8 +14,9 @@ window.onload = function () {
 	NetFlics.getData.utils = (function(){
 		var api_key = '459887bb41a3478ab3139b788b2033e4'; //private
 		return  {	//exposed to public
-			getMoviesByGenre: function(callback, genre, genreId){
+			getMoviesByGenre: function(callback, genre){
 				var moviesByGenre;
+				var genreId = NetFlics.getData.utils.getGenreById(genre);
 				$.ajax({
 				  url: 'http://api.themoviedb.org//3/genre/'+ genreId +'/movies?api_key='+ api_key,
 				  dataType: 'jsonp',
@@ -82,10 +78,6 @@ window.onload = function () {
 				//start slider
 				$('#'+genreName).elastislide();
 			};
-
-
-
-
 		},
 		//receives movie list, cycle and adds 
 		addMoviePosters: function(movieList, genre){	
@@ -105,16 +97,19 @@ window.onload = function () {
 	//creating posters
 	$('#getmovie').click(function(e){
 		e.preventDefault();
+		var movieGenresArray = ['romance','adventure','action','eastern','horror'];
 		//using a callback to get movie data
-		NetFlics.dom.utils.addPosterSlider(['romance','adventure','action','eastern','horror'],'#movie-container');
-		NetFlics.getData.utils.getMoviesByGenre(NetFlics.dom.utils.addMoviePosters,'romance',10749);
-		//$('#romance').elastislide();
-		NetFlics.getData.utils.getMoviesByGenre(NetFlics.dom.utils.addMoviePosters,'adventure',12);
-		//$('#adventure').elastislide();
-		//console.log('getGenreById works: '+NetFlics.getData.utils.getGenreById('Action') );
-
+		NetFlics.dom.utils.addPosterSlider(movieGenresArray,'#movie-container');
+		for (var i = 0; i < movieGenresArray.length; i++) {
+			NetFlics.getData.utils.getMoviesByGenre(NetFlics.dom.utils.addMoviePosters,movieGenresArray[i]);
+		};
 	});
 
-
-  		
-}
+	// WHAT IF...
+	//how about using the facade pattern in slide 59 https://speakerdeck.com/addyosmani/large-scale-javascript-application-architecture
+  	//single module event listener, slide 90
+  	//NetFlics.events
+  	//Netflics.events:bind, unbind, Netflics.utils: , Netflics.dom: dom manipulation, css styling. slide 113
+  	//ajax common method: slide 117
+  	//further reading slide 126
+});
