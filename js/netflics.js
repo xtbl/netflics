@@ -1,13 +1,13 @@
 
 $(function(){
 
-	//top level package
+	//defining global namespace
 	var NetFlics = NetFlics || {};
 
 	//defining package
 	NetFlics.ajax = NetFlics.ajax || {};
 
-	NetFlics.ajax = (function() {
+	NetFlics.ajax = ( function() {
 		//private
 		var api_key = '459887bb41a3478ab3139b788b2033e4'; 
 		//exposed to public
@@ -34,6 +34,30 @@ $(function(){
 			    	}
 			    };
 			    return genderId;
+			},
+			getMovieInfo: function( movieData, elem ){
+				// console.log('in getMovieInfo');
+				// console.log(movieData);
+				// console.log(elem);
+				$('#' + elem + ' a img').qtip({
+					content:{
+					title:{
+						text: 'title'
+					},
+						text:'movie id'
+					}
+				});		
+				//return movieData;
+			},
+			getMovieInfoById: function( callback, movieId, elem ) {
+				$.ajax({
+				  url: 'http://api.themoviedb.org//3/movie/'+ movieId +'?api_key='+ api_key,
+				  dataType: 'jsonp',
+				  success: function( data ) {
+				    movieData = data;//here is!!!
+				    callback( movieData, elem );
+				  }
+				});				
 			}
 		}
 	}());
@@ -41,7 +65,7 @@ $(function(){
 	//defining package
 	NetFlics.dom = NetFlics.dom || {};
 
-	NetFlics.dom = (function() {
+	NetFlics.dom = ( function() {
 		//private
 		var movieLimit = 10; //default movie number
 		//public
@@ -50,7 +74,7 @@ $(function(){
 				movieLimit = limit;
 			},
 			// receives an array with movie genres and create the markup for them
-			addPosterSlider: function( genreList, container ){	
+			addPosterSlider: function( genreList, container ) {	
 				//traversing genreList array and creating a poster slider for each genre in it
 				//using for and not $.each due to performance reasons http://jsperf.com/jquery-each-vs-for-loop/125
 				
@@ -87,35 +111,79 @@ $(function(){
 				var base_url = 'http://cf2.imgobject.com/t/p/w185';
 				if(typeof movieList !== 'undefined'){
 					//add images and ids to each poster
+					var tempMovieImg;
 					for (var i = 0; i < movieLimit; i++) {
 						console.log('title in callback:' + movieList[i].title);
-						$('ul#'+genre+' li:eq('+ i +') img').attr('src', base_url + movieList[i].poster_path);
+						tempMovieImg = $('ul#'+genre+' li:eq('+ i +') img');
+						tempMovieImg.attr('src', base_url + movieList[i].poster_path);
 						$('ul#'+genre+' li:eq('+ i +') a').attr('href', movieList[i].id);
+						tempMovieLi = $('ul#'+genre+' li:eq('+ i +')');
+						tempMovieLi.attr( 'id', movieList[i].id);
+						//tempMovieLi.data('movieId', movieList[i].id);
+						//adding tooltip to each movie poster
+						tempMovieImg.on('mouseover', NetFlics.dom.addTooltip/*( movieList[i].id )*/);
 					};
 					console.log('title in callback in addMoviePosters:' + movieList[0].title);
 				}
+			},
+			addTooltip: function( ) {
+				//console.log('movieid in addTooltip:'+ movieId)
+				//data get this movie id
+				//add movie id identifier for 
+				//console.log('in addTooltip: ' + $(this).parent().parent().attr('id'));
+				NetFlics.ajax.getMovieInfoById( NetFlics.ajax.getMovieInfo, 18, $(this).parent().parent().attr('id') );
+
+				// $(this).parent().qtip({
+				// 	content:{
+				// 	title:{
+				// 		text:'movie title'
+				// 	},
+				// 		text:'movie id'
+				// 	}
+				// });		
+				
 			}
 		};
 	}());
 
 	NetFlics.events = NetFlics.events || {};
-	NetFlics.events = (function(){
+	NetFlics.events = ( function(){
 
 	}());
 
+	NetFlics.init = function(){
+
+
+		var populateMovies = function( evt ){
+				evt.preventDefault();
+				var movieGenresArray = ['romance','adventure','action','eastern','horror'];
+				//using a callback to get movie data
+				NetFlics.dom.addPosterSlider(movieGenresArray,'#movie-container');
+				for (var i = 0; i < movieGenresArray.length; i++) {
+					NetFlics.ajax.getMoviesByGenre( NetFlics.dom.addMoviePosters, movieGenresArray[i] );
+				};
+			};
+
+
+			//attaching listener
+			$('#getmovie').on('click', populateMovies);
+
+			//$('#tooltip-test a img').on('mouseover', NetFlics.dom.addTooltip);
+				$('#tooltip-test a img').qtip({
+					content:{
+					title:{
+						text: 'title'
+					},
+						text:'movie id'
+					}
+				});	
+	};
 
 	//main script
 	(function ($,app) {
-		//creating posters
-		$('#getmovie').click(function( e ){
-			e.preventDefault();
-			var movieGenresArray = ['romance','adventure','action','eastern','horror'];
-			//using a callback to get movie data
-			app.dom.addPosterSlider(movieGenresArray,'#movie-container');
-			for (var i = 0; i < movieGenresArray.length; i++) {
-				app.ajax.getMoviesByGenre( app.dom.addMoviePosters,movieGenresArray[i] );
-			};
-		});
+
+		app.init();
+
 	}(jQuery,NetFlics));
 
 
@@ -131,6 +199,8 @@ $(function(){
   	// *reestructure event,utils,dom,ajax
   	// *change to module pattern
   	// *add main script into an immediate function
-  	// add tooltip http://craigsworks.com/projects/simpletip/#
-  	// create new page
+  	// add tooltip (title, year, director, actors, brief description)
+  	// create new detail page: 
+  		//http://jschr.github.com/bootstrap-modal/
+  		//http://stackoverflow.com/questions/298503/how-can-you-check-for-a-hash-in-a-url-using-javascript?lq=1
 });
