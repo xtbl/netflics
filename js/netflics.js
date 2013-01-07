@@ -103,6 +103,22 @@ $(function(){
 					$(container).append(genreUl);
 					//start slider
 					$('#'+genreName).elastislide();
+
+
+
+					//attaching scroll to movie trailer into posters
+					var scrollTo = function(){
+						$('#movie-details').removeClass('hidden');
+						destination = $("a[name='video-player']");
+						$('html,body').animate( {scrollTop: destination.offset().top},'slow');
+					}
+
+					$('#movie-container div ul li a').click(
+						function(){
+							$('#movie-details h2#movie-title').text( $(this).parent().data('title') );
+							scrollTo();
+					});
+
 				};
 			},
 			//receives movie list, cycle and adds 
@@ -114,16 +130,20 @@ $(function(){
 					var tempMovieImg;
 					for (var i = 0; i < movieLimit; i++) {
 						console.log('title in callback:' + movieList[i].title);
-						tempMovieImg = $('ul#'+genre+' li:eq('+ i +') img');
+						tempMovieImg = $('ul#' + genre + ' li:eq('+ i +') img');
 						tempMovieImg.attr('src', base_url + movieList[i].poster_path);
-						$('ul#'+genre+' li:eq('+ i +') a').attr('href', movieList[i].id);
-						tempMovieLi = $('ul#'+genre+' li:eq('+ i +')');
-						tempMovieLi.attr( 'id', movieList[i].id);
+						//adding href=#
+						//$('ul#'+genre+' li:eq('+ i +') a').attr('href', movieList[i].id);
+						$('ul#' + genre + ' li:eq('+ i +') a').attr('href', "#");
+						tempMovieLi = $('ul#' + genre + ' li:eq('+ i +')');
+						tempMovieLi.attr('id', movieList[i].id);
+						tempMovieLi.attr('class', 'test');
+						tempMovieLi.data('title', movieList[i].title);
 						//tempMovieLi.data('movieId', movieList[i].id);
 						//adding tooltip to each movie poster
 						tempMovieImg.on('mouseover', NetFlics.dom.addTooltip/*( movieList[i].id )*/);
 					};
-					console.log('title in callback in addMoviePosters:' + movieList[0].title);
+
 				}
 			},
 			addTooltip: function( ) {
@@ -142,13 +162,20 @@ $(function(){
 				// 	}
 				// });		
 				
+			},
+			scrollTo: function( e ){
+				e.preventDefault();
+				destination = $("a[name='video-player']");
+				$(document).animate( {scrollTop: destination.offset().top},'slow');
 			}
 		};
 	}());
 
 	NetFlics.events = NetFlics.events || {};
 	NetFlics.events = ( function(){
-
+		$('#movie-container div ul li a').on('click', function(){
+			scrollTo('video-player');
+		});
 	}());
 
 	NetFlics.init = function(){
@@ -172,11 +199,23 @@ $(function(){
 				$('#tooltip-test a img').qtip({
 					content:{
 					title:{
-						text: 'title'
+						text:'title'
 					},
 						text:'movie id'
 					}
 				});	
+
+			//$('a.brand').data('test','content');
+			// var scrollTo = function( event ){
+			// 	event.preventDefault();
+			// 	destination = $("a[name='video-player']");
+			// 	console.log('>>>>>>>>>>>>>>');
+			// 	$('html,body').animate( {scrollTop: destination.offset().top},'slow');
+			// }
+			// $('#movie-container div ul li a').click( 
+			// 	function(){
+			// 		scrollTo(event)
+			// });
 	};
 
 	//main script
